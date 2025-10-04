@@ -13,3 +13,5 @@ geopandas
 python-dotenv
 h5py
 netcdf4
+opencv-python
+numpy
