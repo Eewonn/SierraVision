@@ -1,5 +1,17 @@
 fastapi
 uvicorn
 python-multipart
+requests
+pillow
+numpy
+earthaccess
+xarray
+matplotlib
+rasterio
+folium
+geopandas
+python-dotenv
+h5py
+netcdf4
 opencv-python
 numpy
