@@ -1,7 +1,21 @@
 /**
  * Fire Data Display Component
  * ===========================
- * Interactive component for displaying NASA FIRMS fire data with mapping capabilities
+ * Interactive component for displaying NASA FIRMS fire data with      }}>        <div style={{
+          backgroundColor: 'white',
+          border: '2px solid #e0e0e0',
+          borderRadius: '8px',
+          padding: '15px',
+          textAlign: 'center'
+        }}>
+          <div style={{
+            fontSize: '2rem',
+            fontWeight: 'bold',
+            color: '#000',
+            marginBottom: '5px'
+          }}>
+            {fireData.count || 0}
+          </div>lities
  */
 
 import React, { useState } from 'react'
@@ -63,7 +77,7 @@ const FireDataDisplay = ({ fireData, loading }) => {
         gap: '16px'
       }}>
         <h3 style={{
-          color: '#dc2626',
+          color: '#000',
           margin: '0',
           fontSize: '1.75rem',
           fontWeight: '700',
@@ -130,8 +144,8 @@ const FireDataDisplay = ({ fireData, loading }) => {
         marginBottom: '20px'
       }}>
         <div style={{
-          backgroundColor: '#fff3cd',
-          border: '2px solid #ffeaa7',
+          backgroundColor: 'white',
+          border: '2px solid #e0e0e0',
           borderRadius: '8px',
           padding: '15px',
           textAlign: 'center'
@@ -139,22 +153,22 @@ const FireDataDisplay = ({ fireData, loading }) => {
           <div style={{
             fontSize: '2rem',
             fontWeight: 'bold',
-            color: '#d63031',
+            color: '#000',
             marginBottom: '5px'
           }}>
             {fireData.count || 0}
           </div>
           <div style={{
             fontSize: '14px',
-            color: '#666'
+            color: '#000'
           }}>
             Active Fires Detected
           </div>
         </div>
 
         <div style={{
-          backgroundColor: '#d1ecf1',
-          border: '2px solid #bee5eb',
+          backgroundColor: 'white',
+          border: '2px solid #e0e0e0',
           borderRadius: '8px',
           padding: '15px',
           textAlign: 'center'
@@ -162,22 +176,22 @@ const FireDataDisplay = ({ fireData, loading }) => {
           <div style={{
             fontSize: '1.5rem',
             fontWeight: 'bold',
-            color: '#0c5460',
+            color: '#000',
             marginBottom: '5px'
           }}>
             Sierra Madre
           </div>
           <div style={{
             fontSize: '14px',
-            color: '#666'
+            color: '#000'
           }}>
             Primary Focus Region
           </div>
         </div>
 
         <div style={{
-          backgroundColor: '#f8d7da',
-          border: '2px solid #f5c6cb',
+          backgroundColor: 'white',
+          border: '2px solid #e0e0e0',
           borderRadius: '8px',
           padding: '15px',
           textAlign: 'center'
@@ -185,14 +199,14 @@ const FireDataDisplay = ({ fireData, loading }) => {
           <div style={{
             fontSize: '1.5rem',
             fontWeight: 'bold',
-            color: '#721c24',
+            color: '#000',
             marginBottom: '5px'
           }}>
             NASA FIRMS
           </div>
           <div style={{
             fontSize: '14px',
-            color: '#666'
+            color: '#000'
           }}>
             Data Source
           </div>
@@ -201,8 +215,8 @@ const FireDataDisplay = ({ fireData, loading }) => {
 
       {/* Fire Analysis */}
       <div style={{
-        backgroundColor: '#fff3cd',
-        border: '1px solid #ffeaa7',
+        backgroundColor: 'white',
+        border: '1px solid #e0e0e0',
         borderRadius: '8px',
         padding: '20px'
       }}>
@@ -213,7 +227,7 @@ const FireDataDisplay = ({ fireData, loading }) => {
           marginBottom: '15px'
         }}>
           <span style={{
-            backgroundColor: '#d63031',
+            backgroundColor: '#000',
             color: 'white',
             padding: '6px 12px',
             borderRadius: '20px',
@@ -222,7 +236,7 @@ const FireDataDisplay = ({ fireData, loading }) => {
           }}>
             {fireData.count}
           </span>
-          <span style={{ fontSize: '16px' }}>
+          <span style={{ fontSize: '16px', color: '#000' }}>
             active fires detected in Sierra Madre region
           </span>
         </div>
@@ -236,21 +250,21 @@ const FireDataDisplay = ({ fireData, loading }) => {
           }}>
             <h4 style={{
               margin: '0 0 10px 0',
-              color: '#d63031',
+              color: '#000',
               fontSize: '1.1rem'
             }}>
               Fire Activity Analysis
             </h4>
             <p style={{
               fontSize: '14px',
-              color: '#666',
+              color: '#000',
               margin: '0 0 10px 0'
             }}>
               Recent fire activity detected in the monitoring area. This may indicate:
             </p>
             <ul style={{
               fontSize: '14px',
-              color: '#666',
+              color: '#000',
               margin: '0',
               paddingLeft: '20px'
             }}>
@@ -266,10 +280,10 @@ const FireDataDisplay = ({ fireData, loading }) => {
           <div style={{
             textAlign: 'center',
             padding: '20px',
-            color: '#666'
+            color: '#000'
           }}>
             <p style={{ margin: '0', fontSize: '16px' }}>
-              No active fires detected in the Sierra Madre region
+              <strong>No active fires detected in the Sierra Madre region</strong>
             </p>
             <p style={{ margin: '5px 0 0 0', fontSize: '14px', opacity: 0.8 }}>
               This is good news for forest conservation!
@@ -282,15 +296,15 @@ const FireDataDisplay = ({ fireData, loading }) => {
       {showFireDetails && fireData.fires && fireData.fires.length > 0 && (
         <div style={{
           marginTop: '20px',
-          backgroundColor: '#f8f9fa',
+          backgroundColor: 'white',
           borderRadius: '8px',
           padding: '20px'
         }}>
           <h4 style={{
             margin: '0 0 15px 0',
-            color: '#2c5530'
+            color: '#000'
           }}>
-            🗺️ Detailed Fire Locations
+            Detailed Fire Locations
           </h4>
           <div style={{
             maxHeight: '200px',
@@ -326,7 +340,7 @@ const FireDataDisplay = ({ fireData, loading }) => {
             {fireData.fires.length > 10 && (
               <p style={{
                 textAlign: 'center',
-                color: '#666',
+                color: '#000',
                 fontStyle: 'italic',
                 margin: '10px 0 0 0'
               }}>
@@ -341,13 +355,13 @@ const FireDataDisplay = ({ fireData, loading }) => {
       <div style={{
         marginTop: '20px',
         padding: '15px',
-        backgroundColor: '#d4edda',
-        border: '1px solid #c3e6cb',
+        backgroundColor: 'white',
+        border: '1px solid #e0e0e0',
         borderRadius: '8px',
         fontSize: '14px',
-        color: '#155724'
+        color: '#000'
       }}>
-        <strong>ℹ️ About Fire Data:</strong> Fire detection data is provided by NASA's Fire Information 
+        <strong>About Fire Data:</strong> Fire detection data is provided by NASA's Fire Information 
         for Resource Management System (FIRMS) using VIIRS satellite observations. Data is updated daily 
         and may include both natural fires and controlled burns. High confidence readings indicate more 
         reliable fire detection.

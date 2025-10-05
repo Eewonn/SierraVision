@@ -22,7 +22,6 @@ import Header from './components/Header'
 import StatsDashboard from './components/StatsDashboard'
 import ImageComparison from './components/ImageComparison'
 import FireDataDisplay from './components/FireDataDisplay'
-import ControlsPanel from './components/ControlsPanel'
 import Footer from './components/Footer'
 
 export default function App() {
@@ -183,6 +182,8 @@ export default function App() {
             image2025={image2025}
             imageUrlWithCache={imageUrlWithCache}
             loading={loading}
+            onFetchNewImages={handleFetchNewImages}
+            lastUpdated={lastUpdated}
           />
         </div>
 
@@ -194,14 +195,7 @@ export default function App() {
           />
         </div>
 
-        {/* Controls Panel */}
-        <div className="fade-in">
-          <ControlsPanel
-            loading={loading}
-            onFetchNewImages={handleFetchNewImages}
-            lastUpdated={lastUpdated}
-          />
-        </div>
+
 
         {/* Image Gallery for Loading State */}
         {(!image2000 || !image2025) && images.length > 0 && (

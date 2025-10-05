@@ -6,19 +6,20 @@
 
 import React, { useState } from 'react'
 
-const ImageComparison = ({ image2000, image2025, imageUrlWithCache, loading }) => {
+const ImageComparison = ({ image2000, image2025, imageUrlWithCache, loading, onFetchNewImages, lastUpdated }) => {
   const [selectedView, setSelectedView] = useState('side-by-side')
   const [showImageDetails, setShowImageDetails] = useState(false)
 
   if (!image2000 || !image2025) {
     return (
-      <div style={{
+      <section id="comparison" style={{
         backgroundColor: 'white',
         borderRadius: '16px',
         padding: '48px',
         textAlign: 'center',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        border: '1px solid #e2e8f0'
+        border: '1px solid #e2e8f0',
+        marginBottom: '32px'
       }}>
         <div style={{ 
           width: '64px',
@@ -45,14 +46,73 @@ const ImageComparison = ({ image2000, image2025, imageUrlWithCache, loading }) =
         <p style={{ 
           color: '#64748b',
           fontSize: '1rem',
-          lineHeight: '1.5' 
+          lineHeight: '1.5',
+          marginBottom: '32px'
         }}>
           {loading 
             ? 'Fetching latest satellite data from NASA...' 
-            : 'Click "Fetch Fresh NASA Images" to download comparison imagery'
+            : 'Click "Fetch Fresh NASA Images" to download comparison imagery for the Sierra Madre region'
           }
         </p>
-      </div>
+        
+        {/* Fetch Fresh Images Button */}
+        {!loading && (
+          <button
+            onClick={onFetchNewImages}
+            disabled={loading}
+            style={{
+              backgroundColor: '#059669',
+              color: 'white',
+              border: 'none',
+              padding: '16px 32px',
+              borderRadius: '12px',
+              fontSize: '1rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 12px -1px rgba(5, 150, 105, 0.4)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '12px'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = '#047857'
+              e.target.style.transform = 'translateY(-2px)'
+              e.target.style.boxShadow = '0 8px 20px -1px rgba(5, 150, 105, 0.5)'
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = '#059669'
+              e.target.style.transform = 'translateY(0)'
+              e.target.style.boxShadow = '0 4px 12px -1px rgba(5, 150, 105, 0.4)'
+            }}
+          >
+             Fetch Fresh NASA Images
+          </button>
+        )}
+        
+        {/* Last Updated Info */}
+        {lastUpdated && (
+          <div style={{
+            backgroundColor: '#f8f9fa',
+            border: '1px solid #e9ecef',
+            borderRadius: '8px',
+            padding: '12px',
+            marginTop: '24px',
+            display: 'inline-block'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '14px',
+              color: '#666'
+            }}>
+              <span>🕒</span>
+              <span><strong>Last updated:</strong> {lastUpdated}</span>
+            </div>
+          </div>
+        )}
+      </section>
     )
   }
 
@@ -65,12 +125,12 @@ const ImageComparison = ({ image2000, image2025, imageUrlWithCache, loading }) =
       marginBottom: '32px',
       border: '1px solid #e2e8f0'
     }}>
-      {/* Header with View Controls */}
+      {/* Header with View Controls and Fetch Button */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '32px',
+        marginBottom: '16px',
         flexWrap: 'wrap',
         gap: '16px'
       }}>
@@ -86,13 +146,52 @@ const ImageComparison = ({ image2000, image2025, imageUrlWithCache, loading }) =
         
         <div style={{
           display: 'flex',
-          gap: '8px',
-          alignItems: 'center',
-          backgroundColor: '#f8fafc',
-          padding: '4px',
-          borderRadius: '12px',
-          border: '1px solid #e2e8f0'
+          gap: '12px',
+          alignItems: 'center'
         }}>
+          {/* Fetch Fresh Images Button */}
+          <button
+            onClick={onFetchNewImages}
+            disabled={loading}
+            style={{
+              backgroundColor: loading ? '#9ca3af' : '#059669',
+              color: 'white',
+              border: 'none',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'all 0.3s ease',
+              boxShadow: loading ? 'none' : '0 2px 4px -1px rgba(5, 150, 105, 0.4)',
+              opacity: loading ? 0.7 : 1
+            }}
+            onMouseOver={(e) => {
+              if (!loading) {
+                e.target.style.backgroundColor = '#047857'
+                e.target.style.transform = 'translateY(-1px)'
+              }
+            }}
+            onMouseOut={(e) => {
+              if (!loading) {
+                e.target.style.backgroundColor = '#059669'
+                e.target.style.transform = 'translateY(0)'
+              }
+            }}
+          >
+            {loading ? 'Fetching...' : '🛰️ Fetch Fresh NASA Images'}
+          </button>
+          
+          {/* View Controls */}
+          <div style={{
+            display: 'flex',
+            gap: '8px',
+            alignItems: 'center',
+            backgroundColor: '#f8fafc',
+            padding: '4px',
+            borderRadius: '12px',
+            border: '1px solid #e2e8f0'
+          }}>
           <button
             onClick={() => setSelectedView('side-by-side')}
             style={{
@@ -139,8 +238,31 @@ const ImageComparison = ({ image2000, image2025, imageUrlWithCache, loading }) =
           >
             ℹ️ Details
           </button>
+          </div>
         </div>
       </div>
+
+      {/* Last Updated Info */}
+      {lastUpdated && (
+        <div style={{
+          backgroundColor: '#f8f9fa',
+          border: '1px solid #e9ecef',
+          borderRadius: '6px',
+          padding: '12px',
+          marginBottom: '20px'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontSize: '14px',
+            color: '#666'
+          }}>
+            <span>🕒</span>
+            <span><strong>Last updated:</strong> {lastUpdated}</span>
+          </div>
+        </div>
+      )}
 
       {/* Image Details Panel */}
       {showImageDetails && (
@@ -194,7 +316,7 @@ const ImageComparison = ({ image2000, image2025, imageUrlWithCache, loading }) =
                 justifyContent: 'center',
                 gap: '8px'
               }}>
-                📅 Year 2000 - Baseline
+                 Year 2000 - Baseline
               </h3>
             </div>
             <div style={{ position: 'relative' }}>
@@ -251,7 +373,7 @@ const ImageComparison = ({ image2000, image2025, imageUrlWithCache, loading }) =
                 justifyContent: 'center',
                 gap: '8px'
               }}>
-                📅 Year 2025 - Current
+                 Year 2025 - Current
               </h3>
             </div>
             <div style={{ position: 'relative' }}>
@@ -347,7 +469,7 @@ const ImageComparison = ({ image2000, image2025, imageUrlWithCache, loading }) =
           alignItems: 'center',
           gap: '8px'
         }}>
-          📈 Change Analysis
+           Change Analysis
         </h4>
         <p style={{
           margin: '0',
