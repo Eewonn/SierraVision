@@ -494,7 +494,7 @@ const StatsDashboard = ({ fireData, images, loading, onDataRefresh }) => {
                   borderRadius: '8px',
                   border: '1px solid #e9ecef'
                 }}>
-                  <h3 style={{ color: '#2c5530', marginTop: 0 }}>🔥 Fire Activity</h3>
+                  <h3 style={{ color: '#2c5530', marginTop: 0 }}> Fire Activity</h3>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
                     <div><strong>Active Fires:</strong> {detailedAnalytics.environmental_indicators.active_fires || 0}</div>
                     <div><strong>High Confidence:</strong> {detailedAnalytics.environmental_indicators.high_confidence_fires || 0}</div>
@@ -511,7 +511,7 @@ const StatsDashboard = ({ fireData, images, loading, onDataRefresh }) => {
                   borderRadius: '8px',
                   border: '1px solid #e9ecef'
                 }}>
-                  <h3 style={{ color: '#2c5530', marginTop: 0 }}>🖼️ Image Analysis</h3>
+                  <h3 style={{ color: '#2c5530', marginTop: 0 }}> Image Analysis</h3>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
                     <div><strong>Total Images:</strong> {detailedAnalytics.image_metadata.total_images}</div>
                     <div><strong>Date Range:</strong> {detailedAnalytics.image_metadata.date_range?.earliest || 'N/A'} - {detailedAnalytics.image_metadata.date_range?.latest || 'N/A'}</div>
@@ -570,12 +570,12 @@ const StatsDashboard = ({ fireData, images, loading, onDataRefresh }) => {
                       <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d63031' }}>
                         {detailedAnalytics.change_analysis.forest_loss_hectares?.toLocaleString() || 'N/A'}
                       </div>
-                      <div style={{ fontSize: '12px', color: '#666' }}>Hectares Lost (Since 2000)</div>
+                      <div style={{ fontSize: '12px', color: '#666' }}>Hectares Lost (Since 2010)</div>
                     </div>
                     <div style={{ textAlign: 'center' }}>
                       <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#00b894' }}>
-                        {detailedAnalytics.change_analysis.total_loss_percentage ? 
-                          (100 - detailedAnalytics.change_analysis.total_loss_percentage).toFixed(1) : 'N/A'}%
+                        {detailedAnalytics.change_analysis.forest_remaining_hectares ? 
+                          (detailedAnalytics.change_analysis.forest_remaining_hectares / 1000).toFixed(1) + 'k Ha' : 'N/A'}
                       </div>
                       <div style={{ fontSize: '12px', color: '#666' }}>Forest Coverage Remaining</div>
                     </div>
@@ -599,16 +599,6 @@ const StatsDashboard = ({ fireData, images, loading, onDataRefresh }) => {
                         <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#2d3436' }}>
                           NASA Forest Change Data
                         </span>
-                        <span style={{ 
-                          marginLeft: '10px', 
-                          fontSize: '12px', 
-                          padding: '2px 8px', 
-                          backgroundColor: '#00b894', 
-                          color: 'white', 
-                          borderRadius: '12px' 
-                        }}>
-                          {detailedAnalytics.change_analysis.nasa_forest_data.confidence}
-                        </span>
                       </div>
                       
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', fontSize: '14px' }}>
@@ -621,19 +611,19 @@ const StatsDashboard = ({ fireData, images, loading, onDataRefresh }) => {
                         <div>
                           <strong>Total Loss:</strong><br/>
                           <span style={{ color: '#e74c3c', fontSize: '16px', fontWeight: 'bold' }}>
-                            {detailedAnalytics.change_analysis.nasa_forest_data.total_forest_loss_2000_2023?.toLocaleString() || 'N/A'} ha
+                            {detailedAnalytics.change_analysis.nasa_forest_data.total_forest_loss_2010_2025?.toLocaleString() || 'N/A'} ha
                           </span>
                         </div>
                         <div>
                           <strong>Loss Rate:</strong><br/>
-                          <span style={{ color: '#f39c12', fontSize: '16px', fontWeight: 'bold' }}>
-                            {detailedAnalytics.change_analysis.nasa_forest_data.annual_loss_rate || 'N/A'}%/year
+                          <span style={{ color: '#e74c3c', fontSize: '16px', fontWeight: 'bold' }}>
+                            {detailedAnalytics.change_analysis.nasa_forest_data.annual_loss_rate || 'N/A'}% per year
                           </span>
                         </div>
                         <div>
                           <strong>Data Source:</strong><br/>
                           <span style={{ fontSize: '12px', color: '#636e72' }}>
-                            {detailedAnalytics.change_analysis.nasa_forest_data.data_source || 'NASA Forest Change'}
+                            {'NASA Global Forest Cover Change'}
                           </span>
                         </div>
                       </div>
@@ -650,11 +640,11 @@ const StatsDashboard = ({ fireData, images, loading, onDataRefresh }) => {
                     <div style={{ marginTop: '10px' }}>
                       <strong>Environmental Status:</strong>
                       <div style={{ marginLeft: '10px', fontSize: '14px' }}>
-                        <div>🌲 {detailedAnalytics.change_analysis.change_indicators.forest_coverage}</div>
-                        <div>🔥 {detailedAnalytics.change_analysis.change_indicators.fire_activity}</div>
-                        <div>🏘️ {detailedAnalytics.change_analysis.change_indicators.land_use}</div>
+                        <div> {detailedAnalytics.change_analysis.change_indicators.forest_coverage}</div>
+                        <div> {detailedAnalytics.change_analysis.change_indicators.fire_activity}</div>
+                        <div> {detailedAnalytics.change_analysis.change_indicators.land_use}</div>
                         {detailedAnalytics.change_analysis.change_indicators.data_quality && (
-                          <div>📊 Data Quality: {detailedAnalytics.change_analysis.change_indicators.data_quality}</div>
+                          <div> Data Quality: {detailedAnalytics.change_analysis.change_indicators.data_quality}</div>
                         )}
                       </div>
                     </div>

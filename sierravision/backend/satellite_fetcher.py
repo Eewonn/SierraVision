@@ -304,6 +304,98 @@ class SatelliteDataFetcher:
         """Get bounding box for region"""
         return self.sierra_madre_bbox
     
+    def fetch_year_range_images(self, start_year: int = 2010, end_year: int = 2025, region: str = "sierra_madre") -> Dict:
+        """
+        Fetch images for a range of years (2010-2025)
+        Downloads one image per year for the specified date (July 1st)
+        """
+        print(f"🛰️ Fetching satellite imagery for {region} from {start_year} to {end_year}")
+        
+        region_name = region.replace('_', ' ').title()
+        results = {
+            'region': region,
+            'region_name': region_name,
+            'start_year': start_year,
+            'end_year': end_year,
+            'images_downloaded': {},
+            'successful_years': [],
+            'failed_years': [],
+            'total_images': 0,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        # Download images for each year
+        for year in range(start_year, end_year + 1):
+            try:
+                # Use July 1st as the consistent date for each year
+                date_str = f"{year}-07-01"
+                filename = f"{region}_{year}.png"
+                
+                print(f"📡 Downloading {year} imagery...")
+                result = self.download_image(date_str, filename, region)
+                
+                results['images_downloaded'][str(year)] = result
+                
+                if result.get('success', False):
+                    results['successful_years'].append(year)
+                    results['total_images'] += 1
+                    print(f"✅ {year}: Success ({result.get('source', 'Unknown source')})")
+                else:
+                    results['failed_years'].append(year)
+                    print(f"❌ {year}: Failed - {result.get('error', 'Unknown error')}")
+                    
+            except Exception as e:
+                print(f"❌ {year}: Exception - {e}")
+                results['failed_years'].append(year)
+                results['images_downloaded'][str(year)] = {
+                    'success': False,
+                    'error': str(e)
+                }
+        
+        # Calculate success rate
+        total_years = end_year - start_year + 1
+        success_rate = (len(results['successful_years']) / total_years) * 100
+        
+        results['success_rate'] = round(success_rate, 1)
+        results['message'] = f"Downloaded {results['total_images']}/{total_years} images ({success_rate:.1f}% success rate)"
+        
+        print(f"🎯 Summary: {results['message']}")
+        return results
+    
+    def fetch_single_year_image(self, year: int, region: str = "sierra_madre") -> Dict:
+        """
+        Fetch image for a single year
+        """
+        try:
+            date_str = f"{year}-07-01"
+            filename = f"{region}_{year}.png"
+            
+            print(f"📡 Fetching {year} imagery for {region}...")
+            result = self.download_image(date_str, filename, region)
+            
+            if result.get('success', False):
+                print(f"✅ {year}: Downloaded successfully from {result.get('source')}")
+            else:
+                print(f"❌ {year}: Failed to download")
+            
+            return {
+                'year': year,
+                'region': region,
+                'filename': filename,
+                'result': result,
+                'timestamp': datetime.now().isoformat()
+            }
+            
+        except Exception as e:
+            print(f"❌ {year}: Exception - {e}")
+            return {
+                'year': year,
+                'region': region,
+                'success': False,
+                'error': str(e),
+                'timestamp': datetime.now().isoformat()
+            }
+    
     @property
     def authenticated(self) -> bool:
         """Check if the fetcher is ready to use"""

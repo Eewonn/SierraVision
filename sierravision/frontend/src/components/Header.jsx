@@ -5,6 +5,8 @@
  */
 
 import React from 'react'
+// Import your logo
+import logo from '../assets/sierravision-nobbg.png'
 
 const Header = () => {
   return (
@@ -24,28 +26,63 @@ const Header = () => {
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        <div>
-          <h1 style={{
-            fontSize: '2.75rem',
-            margin: '0',
-            fontWeight: '700',
-            letterSpacing: '-0.02em',
-            background: 'linear-gradient(90deg, #ffffff 0%, #e8f4f8 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}>
-            SierraVision
-          </h1>
-          <p style={{
-            fontSize: '1.15rem',
-            margin: '8px 0 0 0',
-            opacity: 0.85,
-            fontWeight: '400',
-            color: 'rgba(255,255,255,0.9)'
-          }}>
-            Advanced Forest Monitoring & Environmental Analysis
-          </p>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '20px'
+        }}>
+          {/* Logo */}
+          <img 
+            src={logo} 
+            alt="SierraVision Logo" 
+            style={{
+              height: '60px',
+              width: 'auto',
+              filter: 'brightness(1.1) contrast(1.1)',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = 'scale(1.05)'
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'scale(1)'
+            }}
+          />
+          
+          {/* Title and Subtitle */}
+          <div>
+            <h1 style={{
+              fontSize: '2.75rem',
+              margin: '0',
+              fontWeight: '700',
+              letterSpacing: '-0.02em',
+              background: 'linear-gradient(90deg, #ffffff 0%, #e8f4f8 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              SierraVision
+            </h1>
+            <p style={{
+              fontSize: '1.15rem',
+              margin: '8px 0 0 0',
+              opacity: 0.85,
+              fontWeight: '400',
+              color: 'rgba(255,255,255,0.9)'
+            }}>
+              Sierra Madre Forest Monitoring System
+            </p>
+            <p style={{
+              fontSize: '0.875rem',
+              margin: '4px 0 0 0',
+              opacity: 0.75,
+              fontWeight: '300',
+              fontStyle: 'italic',
+              color: 'rgba(255,255,255,0.8)'
+            }}>
+              Powered by NASA Satellite Imagery Datasets
+            </p>
+          </div>
         </div>
         
         <nav style={{

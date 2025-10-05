@@ -12,15 +12,33 @@ export async function fetchFireData() {
   return res.json()
 }
 
-export async function fetchComparisonImages() {
-  const res = await fetch(`${BACKEND}/api/satellite/fetch-comparison`, { method: 'POST' })
-  if (!res.ok) throw new Error(`Failed to fetch comparison images: ${res.status}`)
-  return res.json()
-}
+
 
 export async function checkSatelliteAvailability(date) {
   const res = await fetch(`${BACKEND}/api/satellite-availability/${date}`)
   if (!res.ok) throw new Error(`Failed to check satellite availability: ${res.status}`)
+  return res.json()
+}
+
+export async function fetchYearRangeImages(startYear = 2010, endYear = 2025, region = 'sierra_madre') {
+  const res = await fetch(`${BACKEND}/api/fetch-year-range?start_year=${startYear}&end_year=${endYear}&region=${region}`, {
+    method: 'POST'
+  })
+  if (!res.ok) throw new Error(`Failed to fetch year range images: ${res.status}`)
+  return res.json()
+}
+
+export async function fetchSingleYearImage(year, region = 'sierra_madre') {
+  const res = await fetch(`${BACKEND}/api/fetch-year/${year}?region=${region}`, {
+    method: 'POST'
+  })
+  if (!res.ok) throw new Error(`Failed to fetch image for year ${year}: ${res.status}`)
+  return res.json()
+}
+
+export async function getAvailableYears(region = 'sierra_madre') {
+  const res = await fetch(`${BACKEND}/api/available-years?region=${region}`)
+  if (!res.ok) throw new Error(`Failed to get available years: ${res.status}`)
   return res.json()
 }
 
@@ -46,7 +64,7 @@ export async function getDetailedAnalytics(region) {
       },
       image_metadata: {
         total_images: 0,
-        date_range: { earliest: '2000', latest: '2025', span_years: 25 }
+        date_range: { earliest: '2010', latest: '2025', span_years: 16 }
       },
       change_analysis: {
         deforestation_percent: 2.1,

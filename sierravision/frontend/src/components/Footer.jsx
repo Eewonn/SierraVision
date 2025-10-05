@@ -119,7 +119,7 @@ const Footer = () => {
               marginBottom: '15px',
               fontSize: '1.1rem'
             }}>
-              🔗 Quick Links
+               Quick Links
             </h4>
             <ul style={{
               listStyle: 'none',
@@ -136,7 +136,7 @@ const Footer = () => {
                   alignItems: 'center',
                   gap: '8px'
                 }}>
-                  <span>📊</span>
+
                   <span>Overview Dashboard</span>
                 </a>
               </li>
@@ -148,7 +148,7 @@ const Footer = () => {
                   alignItems: 'center',
                   gap: '8px'
                 }}>
-                  <span>🖼️</span>
+
                   <span>Image Comparison</span>
                 </a>
               </li>
@@ -160,7 +160,7 @@ const Footer = () => {
                   alignItems: 'center',
                   gap: '8px'
                 }}>
-                  <span>🔥</span>
+
                   <span>Fire Data</span>
                 </a>
               </li>
@@ -172,7 +172,7 @@ const Footer = () => {
                   alignItems: 'center',
                   gap: '8px'
                 }}>
-                  <span>💻</span>
+
                   <span>GitHub Repository</span>
                 </a>
               </li>
@@ -186,26 +186,26 @@ const Footer = () => {
               marginBottom: '15px',
               fontSize: '1.1rem'
             }}>
-              ⚙️ Technical Stack
+               Technical Stack
             </h4>
             <div style={{
               fontSize: '14px',
               color: '#e8f5e8'
             }}>
               <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>⚛️</span>
+
                 <span>React Frontend</span>
               </div>
               <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>🐍</span>
+
                 <span>Python FastAPI</span>
               </div>
               <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>🛰️</span>
+
                 <span>NASA APIs</span>
               </div>
               <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>🌐</span>
+
                 <span>Earthaccess Library</span>
               </div>
             </div>
@@ -230,7 +230,7 @@ const Footer = () => {
               margin: '0 0 10px 0',
               fontSize: '1rem'
             }}>
-              🌱 Environmental Impact
+               Environmental Impact
             </h4>
             <p style={{
               fontSize: '14px',
@@ -264,11 +264,11 @@ const Footer = () => {
             gap: '20px',
             alignItems: 'center'
           }}>
-            <span>🌍 Monitoring Earth's Forests</span>
+            <span> Monitoring Earth's Forests</span>
             <span>•</span>
-            <span>🛰️ Powered by NASA Data</span>
+            <span> Powered by NASA Datasets</span>
             <span>•</span>
-            <span>🌲 Conservation Through Technology</span>
+            <span> Conservation Through Technology</span>
           </div>
         </div>
 

@@ -1,5 +1,15 @@
 /**
- * SierraVision Frontend Application
+ * SierraVision Frontenexport default function App() {
+  // Application state management
+  const [images, setImages] = useState([])           // Available satellite images
+  const [error, setError] = useState(null)          // Error messages
+  const [fireData, setFireData] = useState(null)    // Active fire data from NASA FIRMS
+  const [loading, setLoading] = useState(false)     // Loading state for fetch operations
+  const [lastUpdated, setLastUpdated] = useState(null) // Timestamp of last data update
+  
+  // Year slider state
+  const [availableYears, setAvailableYears] = useState([]) // Years with downloaded images
+  const [currentYear, setCurrentYear] = useState(2024)     // Currently selected yearn
  * =================================
  * Advanced React application for comprehensive forest monitoring and deforestation 
  * analysis in the Sierra Madre region using NASA satellite imagery and environmental data.
@@ -15,12 +25,12 @@
  */
 
 import React, { useEffect, useState } from 'react'
-import { fetchImages, fetchFireData, fetchComparisonImages } from './api'
+import { fetchImages, fetchFireData, fetchYearRangeImages, fetchSingleYearImage, getAvailableYears } from './api'
 
 // Import custom components
 import Header from './components/Header'
 import StatsDashboard from './components/StatsDashboard'
-import ImageComparison from './components/ImageComparison'
+import YearSlider from './components/YearSlider'
 import FireDataDisplay from './components/FireDataDisplay'
 import Footer from './components/Footer'
 
@@ -31,6 +41,11 @@ export default function App() {
   const [fireData, setFireData] = useState(null)    // Active fire data from NASA FIRMS
   const [loading, setLoading] = useState(false)     // Loading state for fetch operations
   const [lastUpdated, setLastUpdated] = useState(null) // Timestamp of last data update
+  
+  // Year slider state
+  const [availableYears, setAvailableYears] = useState([]) // Years with downloaded images
+  const [currentYear, setCurrentYear] = useState(2024)     // Currently selected year
+  const [viewMode, setViewMode] = useState('slider')       // 'comparison' or 'slider'
 
   // Load initial data when component mounts
   useEffect(() => {
@@ -43,15 +58,17 @@ export default function App() {
    */
   const loadData = async () => {
     try {
-      // Fetch both image list and fire data simultaneously
-      const [imagesData, fireDataResult] = await Promise.all([
-        fetchImages(),    // Get list of available satellite images
-        fetchFireData()   // Get active fire data from NASA FIRMS
+      // Fetch image list, fire data, and available years simultaneously
+      const [imagesData, fireDataResult, yearsData] = await Promise.all([
+        fetchImages(),      // Get list of available satellite images
+        fetchFireData(),    // Get active fire data from NASA FIRMS
+        getAvailableYears() // Get years for which we have images
       ])
       
       // Update application state with fetched data
       setImages(imagesData.images || [])
       setFireData(fireDataResult)
+      setAvailableYears(yearsData.available_years || [])
       
       // Clear any previous errors
       setError(null)
@@ -62,17 +79,18 @@ export default function App() {
     }
   }
 
+
+
   /**
-   * Fetch fresh satellite imagery from NASA sources
-   * Triggers backend to download and process new comparison images
+   * Fetch images for a range of years (2010-2025)
+   * Downloads satellite imagery for multiple years
    */
-  const handleFetchNewImages = async () => {
+  const handleFetchYearRange = async (startYear = 2010, endYear = 2025) => {
     setLoading(true)
     setError(null)
     
     try {
-      // Request fresh satellite imagery from NASA for Sierra Madre region
-      const result = await fetchComparisonImages('sierra_madre')
+      const result = await fetchYearRangeImages(startYear, endYear)
       
       // Update timestamp for last fetch operation
       setLastUpdated(new Date().toLocaleString())
@@ -80,29 +98,51 @@ export default function App() {
       // Refresh data to get newly generated images
       await loadData()
       
-      // Force browser cache refresh by clearing and reloading images
-      // This ensures users see the latest imagery
-      setImages([])
-      setTimeout(() => {
-        loadData()
-      }, 100)
+      console.log(`Fetched images for ${startYear}-${endYear}:`, result)
       
     } catch (err) {
-      // Handle fetch errors with user-friendly message
-      setError(`Failed to fetch new images: ${err.message}`)
-      console.error('Error fetching new images:', err)
+      setError(`Failed to fetch year range images: ${err.message}`)
+      console.error('Error fetching year range images:', err)
     } finally {
-      // Always reset loading state
       setLoading(false)
     }
   }
 
+  /**
+   * Fetch image for a specific year
+   */
+  const handleFetchSingleYear = async (year) => {
+    setLoading(true)
+    setError(null)
+    
+    try {
+      const result = await fetchSingleYearImage(year)
+      
+      // Update timestamp for last fetch operation
+      setLastUpdated(new Date().toLocaleString())
+      
+      // Refresh data to get newly generated images
+      await loadData()
+      
+      console.log(`Fetched image for ${year}:`, result)
+      
+    } catch (err) {
+      setError(`Failed to fetch image for year ${year}: ${err.message}`)
+      console.error('Error fetching single year image:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  /**
+   * Handle year change from slider
+   */
+  const handleYearChange = (year) => {
+    setCurrentYear(year)
+  }
 
 
-  // Extract specific year images from the available images list
-  const image2000 = images.find(img => img.includes('2000'))  // Historical baseline image
-  const image2025 = images.find(img => img.includes('2025'))  // Recent comparison image
-  
+
   /**
    * Generate image URL with cache-busting parameter
    * Ensures browser fetches the latest version of images
@@ -175,15 +215,16 @@ export default function App() {
           />
         </div>
 
-        {/* Image Comparison Section */}
+        {/* Year Slider Section */}
         <div className="fade-in">
-          <ImageComparison
-            image2000={image2000}
-            image2025={image2025}
-            imageUrlWithCache={imageUrlWithCache}
+          <YearSlider
+            availableYears={availableYears}
+            currentYear={currentYear}
+            onYearChange={handleYearChange}
             loading={loading}
-            onFetchNewImages={handleFetchNewImages}
-            lastUpdated={lastUpdated}
+            onFetchYear={handleFetchSingleYear}
+            onFetchYearRange={handleFetchYearRange}
+            imageUrlWithCache={imageUrlWithCache}
           />
         </div>
 
@@ -194,76 +235,6 @@ export default function App() {
             loading={loading}
           />
         </div>
-
-
-
-        {/* Image Gallery for Loading State */}
-        {(!image2000 || !image2025) && images.length > 0 && (
-          <section style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            padding: '32px',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-            marginBottom: '32px',
-            border: '1px solid #e2e8f0'
-          }}>
-            <h3 style={{
-              color: '#1e293b',
-              marginBottom: '24px',
-              textAlign: 'center',
-              fontSize: '1.5rem',
-              fontWeight: '600'
-            }}>
-              Available Satellite Images
-            </h3>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '24px'
-            }}>
-              {images.map(img => (
-                <div key={img} style={{
-                  backgroundColor: '#ffffff',
-                  borderRadius: '12px',
-                  padding: '20px',
-                  textAlign: 'center',
-                  border: '1px solid #e2e8f0',
-                  transition: 'all 0.3s ease',
-                  cursor: 'pointer'
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-4px)'
-                  e.currentTarget.style.boxShadow = '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-                }}>
-                  <img 
-                    src={`http://localhost:8000/data/${img}`} 
-                    alt={img}
-                    style={{
-                      maxWidth: '100%',
-                      height: 'auto',
-                      borderRadius: '8px',
-                      marginBottom: '16px',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                    }}
-                  />
-                  <p style={{
-                    fontSize: '14px',
-                    color: '#64748b',
-                    margin: 0,
-                    fontWeight: '600',
-                    textTransform: 'capitalize'
-                  }}>
-                    {img.replace(/[_-]/g, ' ').replace('.png', '')}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
       </div>
 
       {/* Application Footer */}
