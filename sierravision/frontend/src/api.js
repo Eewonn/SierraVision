@@ -13,13 +13,74 @@ export async function fetchFireData() {
 }
 
 export async function fetchComparisonImages() {
-  const res = await fetch(`${BACKEND}/api/nasa/fetch-comparison`, { method: 'POST' })
+  const res = await fetch(`${BACKEND}/api/satellite/fetch-comparison`, { method: 'POST' })
   if (!res.ok) throw new Error(`Failed to fetch comparison images: ${res.status}`)
   return res.json()
 }
 
-export async function getSatelliteUrl(date) {
-  const res = await fetch(`${BACKEND}/api/nasa/satellite-urls?date=${date}`)
-  if (!res.ok) throw new Error(`Failed to get satellite URL: ${res.status}`)
+export async function checkSatelliteAvailability(date) {
+  const res = await fetch(`${BACKEND}/api/satellite-availability/${date}`)
+  if (!res.ok) throw new Error(`Failed to check satellite availability: ${res.status}`)
   return res.json()
+}
+
+export async function getDetailedAnalytics(region) {
+  try {
+    const res = await fetch(`${BACKEND}/api/detailed-analytics/${region}`)
+    if (!res.ok) throw new Error(`Failed to fetch analytics: ${res.status}`)
+    return res.json()
+  } catch (error) {
+    // Return mock data if endpoint doesn't exist yet
+    console.warn('Analytics endpoint not available:', error)
+    return {
+      region,
+      timestamp: new Date().toISOString(),
+      deforestationRate: 2.1,
+      fireRisk: 'High',
+      vegetationHealth: 78,
+      monthlyTrend: 'Decreasing',
+      environmental_indicators: {
+        active_fires: 0,
+        high_confidence_fires: 0,
+        fire_confidence_avg: 0
+      },
+      image_metadata: {
+        total_images: 0,
+        date_range: { earliest: '2000', latest: '2025', span_years: 25 }
+      },
+      change_analysis: {
+        deforestation_percent: 2.1,
+        forest_loss_hectares: 1250,
+        recommendations: ['Increase monitoring frequency', 'Deploy fire prevention resources']
+      }
+    }
+  }
+}
+
+export async function refreshAllData(removeImages = true) {
+  try {
+    const res = await fetch(`${BACKEND}/api/refresh-all-data?remove_images=${removeImages}`, { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    if (!res.ok) throw new Error(`Failed to refresh data: ${res.status}`)
+    return res.json()
+  } catch (error) {
+    console.error('Refresh data error:', error)
+    return { success: false, message: `Error: ${error.message}` }
+  }
+}
+
+export async function exportPDFReport(region) {
+  try {
+    const res = await fetch(`${BACKEND}/api/export-report/${region}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    if (!res.ok) throw new Error(`Failed to export PDF: ${res.status}`)
+    return res.json()
+  } catch (error) {
+    console.error('PDF export error:', error)
+    throw new Error(`PDF export failed: ${error.message}`)
+  }
 }

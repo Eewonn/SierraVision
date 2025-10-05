@@ -1,18 +1,50 @@
 {
   "name": "sierravision-frontend",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "description": "Frontend React application for SierraVision forest monitoring system",
   "private": true,
+  "type": "module",
+  "keywords": [
+    "forest-monitoring",
+    "deforestation",
+    "nasa",
+    "satellite-imagery",
+    "environmental-monitoring",
+    "sierra-madre",
+    "philippines"
+  ],
+  "author": "SierraVision Team",
+  "license": "MIT",
+  "homepage": ".",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0 --port 5173",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --host 0.0.0.0 --port 4173",
+    "lint": "echo 'Linting not configured yet'",
+    "clean": "rm -rf dist node_modules/.vite"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "vite": "^5.0.0",
-    "@vitejs/plugin-react": "^4.0.0"
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
