@@ -1,184 +1,279 @@
+/**
+ * SierraVision Frontend Application
+ * =================================
+ * Advanced React application for comprehensive forest monitoring and deforestation 
+ * analysis in the Sierra Madre region using NASA satellite imagery and environmental data.
+ * 
+ * Features:
+ * - Interactive satellite imagery comparison (2000 vs 2025)
+ * - Real-time NASA FIRMS fire data with detailed analysis
+ * - Focused on Sierra Madre region monitoring
+ * - Statistical dashboard with monitoring metrics
+ * - Advanced controls with region selection
+ * - Responsive component-based architecture
+ * - Professional UI with enhanced user experience
+ */
+
 import React, { useEffect, useState } from 'react'
 import { fetchImages, fetchFireData, fetchComparisonImages } from './api'
 
-export default function App() {
-  const [images, setImages] = useState([])
-  const [error, setError] = useState(null)
-  const [fireData, setFireData] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [lastUpdated, setLastUpdated] = useState(null)
+// Import custom components
+import Header from './components/Header'
+import StatsDashboard from './components/StatsDashboard'
+import ImageComparison from './components/ImageComparison'
+import FireDataDisplay from './components/FireDataDisplay'
+import ControlsPanel from './components/ControlsPanel'
+import Footer from './components/Footer'
 
+export default function App() {
+  // Application state management
+  const [images, setImages] = useState([])           // Available satellite images
+  const [error, setError] = useState(null)          // Error messages
+  const [fireData, setFireData] = useState(null)    // Active fire data from NASA FIRMS
+  const [loading, setLoading] = useState(false)     // Loading state for fetch operations
+  const [lastUpdated, setLastUpdated] = useState(null) // Timestamp of last data update
+
+  // Load initial data when component mounts
   useEffect(() => {
     loadData()
   }, [])
 
+  /**
+   * Load satellite images and fire data from the backend API
+   * Fetches both datasets concurrently for better performance
+   */
   const loadData = async () => {
     try {
+      // Fetch both image list and fire data simultaneously
       const [imagesData, fireDataResult] = await Promise.all([
-        fetchImages(),
-        fetchFireData()
+        fetchImages(),    // Get list of available satellite images
+        fetchFireData()   // Get active fire data from NASA FIRMS
       ])
+      
+      // Update application state with fetched data
       setImages(imagesData.images || [])
       setFireData(fireDataResult)
+      
+      // Clear any previous errors
+      setError(null)
     } catch (err) {
+      // Handle and display fetch errors
       setError(err.message)
+      console.error('Error loading data:', err)
     }
   }
 
+  /**
+   * Fetch fresh satellite imagery from NASA sources
+   * Triggers backend to download and process new comparison images
+   */
   const handleFetchNewImages = async () => {
     setLoading(true)
     setError(null)
+    
     try {
-      const result = await fetchComparisonImages()
-      await loadData() // Refresh the data
+      // Request fresh satellite imagery from NASA for Sierra Madre region
+      const result = await fetchComparisonImages('sierra_madre')
+      
+      // Update timestamp for last fetch operation
       setLastUpdated(new Date().toLocaleString())
       
-      // Force browser to reload images by clearing and resetting
+      // Refresh data to get newly generated images
+      await loadData()
+      
+      // Force browser cache refresh by clearing and reloading images
+      // This ensures users see the latest imagery
       setImages([])
       setTimeout(() => {
         loadData()
       }, 100)
+      
     } catch (err) {
+      // Handle fetch errors with user-friendly message
       setError(`Failed to fetch new images: ${err.message}`)
+      console.error('Error fetching new images:', err)
     } finally {
+      // Always reset loading state
       setLoading(false)
     }
   }
 
-  const image2000 = images.find(img => img.includes('2000'))
-  const image2025 = images.find(img => img.includes('2025'))
+
+
+  // Extract specific year images from the available images list
+  const image2000 = images.find(img => img.includes('2000'))  // Historical baseline image
+  const image2025 = images.find(img => img.includes('2025'))  // Recent comparison image
   
-  // Add cache busting for fresh images
+  /**
+   * Generate image URL with cache-busting parameter
+   * Ensures browser fetches the latest version of images
+   * @param {string} filename - Image filename to load
+   * @returns {string} - Complete URL with cache buster
+   */
   const imageUrlWithCache = (filename) => {
     return `http://localhost:8000/data/${filename}?t=${Date.now()}`
   }
 
   return (
-    <div style={{fontFamily: 'sans-serif', padding: 20, maxWidth: '1200px', margin: '0 auto'}}>
-      <h1 style={{textAlign: 'center', color: '#2c5530'}}>🛰️ SierraVision — Deforestation Viewer</h1>
-      <p style={{textAlign: 'center', fontSize: '18px', color: '#666'}}>
-        Monitoring Sierra Madre forest changes using NASA satellite imagery
-      </p>
+    <div style={{
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      backgroundColor: '#f8fafc',
+      minHeight: '100vh',
+      color: '#334155'
+    }}>
+      {/* Application Header */}
+      <Header />
       
-      {error && <div style={{color: 'red', textAlign: 'center', marginBottom: 20}}>Error: {error}</div>}
-
-      {image2000 && image2025 ? (
-        <div>
+      {/* Error Display */}
+      {error && (
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto 24px auto',
+          padding: '0 24px'
+        }}>
           <div style={{
-            display: 'grid', 
-            gridTemplateColumns: '1fr 1fr', 
-            gap: '20px', 
-            marginBottom: '30px'
+            color: '#dc2626', 
+            backgroundColor: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: '12px',
+            padding: '16px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
           }}>
-            <div style={{textAlign: 'center'}}>
-              <h2 style={{color: '#2c5530', marginBottom: '10px'}}>📅 Year 2000</h2>
-              <img 
-                src={imageUrlWithCache(image2000)} 
-                alt="Sierra Madre 2000" 
-                style={{
-                  width: '100%', 
-                  height: 'auto', 
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-                }} 
-              />
-              <p style={{color: '#666', marginTop: '10px'}}>Baseline forest coverage</p>
-            </div>
-            
-            <div style={{textAlign: 'center'}}>
-              <h2 style={{color: '#d63031', marginBottom: '10px'}}>📅 Year 2025</h2>
-              <img 
-                src={imageUrlWithCache(image2025)} 
-                alt="Sierra Madre 2025" 
-                style={{
-                  width: '100%', 
-                  height: 'auto', 
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-                }} 
-              />
-              <p style={{color: '#666', marginTop: '10px'}}>Current forest coverage</p>
-            </div>
-          </div>
-
-          {fireData && (
             <div style={{
-              backgroundColor: '#fff3cd', 
-              border: '1px solid #ffeaa7', 
-              borderRadius: '8px', 
-              padding: '15px', 
-              marginTop: '20px'
-            }}>
-              <h3 style={{color: '#d63031', margin: '0 0 10px 0'}}>🔥 Active Fire Data</h3>
-              <p style={{margin: '5px 0'}}>
-                <strong>{fireData.count}</strong> active fires detected in Sierra Madre region
-              </p>
-              {fireData.fires && fireData.fires.length > 0 && (
-                <p style={{fontSize: '14px', color: '#666'}}>
-                  Recent fire activity may indicate deforestation or agricultural burning
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-      ) : (
-        <div style={{textAlign: 'center', padding: '40px'}}>
-          <p>Loading Sierra Madre imagery...</p>
-          {images.length > 0 && (
-            <div>
-              <h3>Available images:</h3>
-              <ul style={{listStyle: 'none', padding: 0}}>
-                {images.map(img => (
-                  <li key={img} style={{margin: '10px 0'}}>
-                    <img 
-                      src={`http://localhost:8000/data/${img}`} 
-                      alt={img}
-                      style={{maxWidth: '200px', height: 'auto', marginRight: '10px'}}
-                    />
-                    {img}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+              backgroundColor: '#dc2626',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              flexShrink: 0
+            }}>!</div>
+            <span>Error: {error}</span>
+          </div>
         </div>
       )}
-      
+
+      {/* Main Content Container */}
       <div style={{
-        marginTop: '30px', 
-        padding: '20px', 
-        backgroundColor: '#f8f9fa', 
-        borderRadius: '8px',
-        textAlign: 'center'
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '0 24px'
       }}>
-        <button
-          onClick={handleFetchNewImages}
-          disabled={loading}
-          style={{
-            backgroundColor: loading ? '#ddd' : '#00b894',
-            color: 'white',
-            border: 'none',
-            padding: '12px 24px',
-            borderRadius: '6px',
-            fontSize: '16px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            marginBottom: '15px'
-          }}
-        >
-          {loading ? '🛰️ Fetching Latest Imagery...' : '🔄 Fetch Fresh NASA Images'}
-        </button>
-        
-        {lastUpdated && (
-          <p style={{color: '#666', fontSize: '14px', margin: '5px 0'}}>
-            🕒 Last updated: {lastUpdated}
-          </p>
+        {/* Statistics Dashboard */}
+        <div className="fade-in">
+          <StatsDashboard 
+            fireData={fireData}
+            images={images}
+            loading={loading}
+            onDataRefresh={loadData}
+          />
+        </div>
+
+        {/* Image Comparison Section */}
+        <div className="fade-in">
+          <ImageComparison
+            image2000={image2000}
+            image2025={image2025}
+            imageUrlWithCache={imageUrlWithCache}
+            loading={loading}
+          />
+        </div>
+
+        {/* Fire Data Display */}
+        <div id="data" className="fade-in">
+          <FireDataDisplay 
+            fireData={fireData}
+            loading={loading}
+          />
+        </div>
+
+        {/* Controls Panel */}
+        <div className="fade-in">
+          <ControlsPanel
+            loading={loading}
+            onFetchNewImages={handleFetchNewImages}
+            lastUpdated={lastUpdated}
+          />
+        </div>
+
+        {/* Image Gallery for Loading State */}
+        {(!image2000 || !image2025) && images.length > 0 && (
+          <section style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '32px',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            marginBottom: '32px',
+            border: '1px solid #e2e8f0'
+          }}>
+            <h3 style={{
+              color: '#1e293b',
+              marginBottom: '24px',
+              textAlign: 'center',
+              fontSize: '1.5rem',
+              fontWeight: '600'
+            }}>
+              Available Satellite Images
+            </h3>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '24px'
+            }}>
+              {images.map(img => (
+                <div key={img} style={{
+                  backgroundColor: '#ffffff',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  textAlign: 'center',
+                  border: '1px solid #e2e8f0',
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)'
+                  e.currentTarget.style.boxShadow = '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+                }}>
+                  <img 
+                    src={`http://localhost:8000/data/${img}`} 
+                    alt={img}
+                    style={{
+                      maxWidth: '100%',
+                      height: 'auto',
+                      borderRadius: '8px',
+                      marginBottom: '16px',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }}
+                  />
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#64748b',
+                    margin: 0,
+                    fontWeight: '600',
+                    textTransform: 'capitalize'
+                  }}>
+                    {img.replace(/[_-]/g, ' ').replace('.png', '')}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
         )}
-        
-        <h3 style={{color: '#2c5530', margin: '15px 0 10px 0'}}>🌍 Data Sources</h3>
-        <p style={{margin: '5px 0', fontSize: '14px', color: '#666'}}>
-          NASA Worldview • FIRMS Fire Data • MODIS/Landsat Imagery
-        </p>
       </div>
+
+      {/* Application Footer */}
+      <Footer />
     </div>
   )
 }

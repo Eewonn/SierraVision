@@ -1,17 +1,20 @@
-fastapi
-uvicorn
-python-multipart
-requests
-pillow
-numpy
-earthaccess
-xarray
-matplotlib
-rasterio
-folium
-geopandas
-python-dotenv
-h5py
-netcdf4
-opencv-python
-numpy
+# SierraVision Backend Dependencies
+# =================================
+# Core dependencies required for the SierraVision backend application
+# Install with: pip install -r requirements.txt
+
+# Web Framework and Server
+fastapi         # Modern, fast web framework for building APIs
+uvicorn         # ASGI server for running FastAPI applications
+
+# HTTP Client and Environment
+requests        # HTTP library for making API requests to NASA services
+python-dotenv   # Load environment variables from .env files
+
+# Image Processing and Visualization
+pillow          # Python Imaging Library for image processing and enhancement
+numpy           # Numerical computing library
+matplotlib      # Plotting library (minimal usage, non-interactive backend)
+
+# PDF Generation and Reporting (optional)
+reportlab       # PDF generation library for environmental reports
