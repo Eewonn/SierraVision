@@ -6,6 +6,7 @@
 # Web Framework and Server
 fastapi         # Modern, fast web framework for building APIs
 uvicorn         # ASGI server for running FastAPI applications
+python-multipart # Required for FastAPI file uploads and form handling
 
 # HTTP Client and Environment
 requests        # HTTP library for making API requests to NASA services
@@ -16,5 +17,8 @@ pillow          # Python Imaging Library for image processing and enhancement
 numpy           # Numerical computing library
 matplotlib      # Plotting library (minimal usage, non-interactive backend)
 
-# PDF Generation and Reporting (optional)
+# PDF Generation and Reporting
 reportlab       # PDF generation library for environmental reports
+
+# Date and Time Utilities (built-in with Python 3.7+)
+# datetime, pathlib, json, os, re, typing - all built-in modules
